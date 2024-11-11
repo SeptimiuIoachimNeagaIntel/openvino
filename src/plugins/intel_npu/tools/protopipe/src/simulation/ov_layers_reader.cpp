@@ -72,6 +72,7 @@ static int toPrecision(ov::element::Type prec) {
 
 template <typename InfoVec>
 std::vector<LayerInfo> ovToLayersInfo(const InfoVec& vec) {
+    std::cout << "Septi Here" << std::endl;
     std::vector<LayerInfo> layers;
     layers.reserve(vec.size());
     std::transform(vec.begin(), vec.end(), std::back_inserter(layers), [](const auto& node) {
