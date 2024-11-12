@@ -38,6 +38,7 @@ InOutLayers LayersReader::readLayers(const InferenceParams& params) {
         return getOVReader().readLayers(ov);
     }
     ASSERT(std::holds_alternative<ONNXRTParams>(params));
+    std::cout << "Septi LayersReader::readLayers" << std::endl;
     const auto& ort = std::get<ONNXRTParams>(params);
     // NB: Using OpenVINO to read the i/o layers information for *.onnx model
     OpenVINOParams ov;

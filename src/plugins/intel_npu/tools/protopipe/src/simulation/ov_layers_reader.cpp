@@ -72,12 +72,36 @@ static int toPrecision(ov::element::Type prec) {
 
 template <typename InfoVec>
 std::vector<LayerInfo> ovToLayersInfo(const InfoVec& vec) {
-    std::cout << "Septi Here" << std::endl;
+    std::cout << "Septi ovToLayersInfo start" << std::endl;
     std::vector<LayerInfo> layers;
     layers.reserve(vec.size());
+    std::cout << "Septi ovToLayersInfo get_partial_shape" << std::endl;
+    for (auto& node : vec) {
+        std::cout << "New node ---- : " << std::endl;
+        auto partialShape =  node.get_partial_shape();
+        std::vector<ov::Dimension> newDimension;
+        for (auto& shape : partialShape) {
+            std::cout << "New shape ---- : " << std::endl;
+            std::cout << "shape is dynamic: " << shape.is_dynamic() << std::endl;
+            std::cout << "shape is static: " << shape.is_static() << std::endl;
+            std::cout << shape.to_string() <<std::endl;
+            if (shape.is_static()) {
+                newDimension.emplace_back(shape);
+            } else {
+                newDimension.emplace_back(1);
+            }
+
+            // if (shape.is_dynamic()) {
+            //     std::cout << "shape is dynamic: " << shape = ov::Dimension(1);
+            // }
+        }
+        ov::PartialShape ps (newDimension);
+        //node.set_partial_shape(ps);
+    }
     std::transform(vec.begin(), vec.end(), std::back_inserter(layers), [](const auto& node) {
         return LayerInfo{node.get_any_name(), toDims(node.get_shape()), toPrecision(node.get_element_type())};
     });
+    std::cout << "Septi ovToLayersInfo end" << std::endl;
     return layers;
 };
 
