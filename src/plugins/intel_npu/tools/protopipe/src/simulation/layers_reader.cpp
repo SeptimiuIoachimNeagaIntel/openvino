@@ -43,6 +43,7 @@ static void adjustLayerPartialShapes(LayersInfo& layers) {
 }
 
 InOutLayers LayersReader::readLayers(const InferenceParams& params) {
+    LOG_INFO() << "Reading model " << getModelFileName(params) << std::endl;
     if (std::holds_alternative<OpenVINOParams>(params)) {
         const auto& ov = std::get<OpenVINOParams>(params);
         return getOVReader().readLayers(ov);

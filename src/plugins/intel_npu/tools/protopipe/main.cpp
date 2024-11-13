@@ -178,7 +178,6 @@ static Simulation::Ptr createSimulation(const std::string& mode, StreamDesc&& st
 }
 
 int main(int argc, char* argv[]) {
-    std::cout  << "Septi main" << std::endl;
     // NB: Intentionally wrapped into try-catch to display exceptions occur on windows.
     try {
         if (!parseCommandLine(&argc, &argv)) {
