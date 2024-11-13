@@ -31,17 +31,30 @@ static std::string getModelFileName(const InferenceParams& params) {
     ASSERT(false);
 }
 
+static void adjustLayerPartialShapes(LayersInfo& layers) {
+    for (auto& layer : layers) {
+        for (auto& dim : layer.dims) {
+            if (dim == -1) {
+                LOG_INFO() << "Dynamic partial shape detected for layer " << layer.name << " partial shape will be set to 1" << std::endl;
+                dim = 1;
+            }
+        }
+    }
+}
+
 InOutLayers LayersReader::readLayers(const InferenceParams& params) {
-    LOG_INFO() << "Reading model " << getModelFileName(params) << std::endl;
     if (std::holds_alternative<OpenVINOParams>(params)) {
         const auto& ov = std::get<OpenVINOParams>(params);
         return getOVReader().readLayers(ov);
     }
     ASSERT(std::holds_alternative<ONNXRTParams>(params));
-    std::cout << "Septi LayersReader::readLayers" << std::endl;
     const auto& ort = std::get<ONNXRTParams>(params);
     // NB: Using OpenVINO to read the i/o layers information for *.onnx model
     OpenVINOParams ov;
     ov.path = OpenVINOParams::ModelPath{ort.model_path, ""};
-    return getOVReader().readLayers(ov, true /* use_results_names */);
+    auto inOutLayers = getOVReader().readLayers(ov, true /* use_results_names */);
+    adjustLayerPartialShapes(inOutLayers.in_layers);
+    adjustLayerPartialShapes(inOutLayers.out_layers);
+
+    return inOutLayers;
 }
