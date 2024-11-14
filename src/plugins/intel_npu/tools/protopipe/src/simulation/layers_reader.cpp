@@ -32,23 +32,19 @@ static std::string getModelFileName(const InferenceParams& params) {
 }
 
 static void adjustDynamicDims(LayersInfo& layers) {
-    auto dims_to_string = [](const std::vector<int>& dims) {
-        std::stringstream ss;
-        std::copy(dims.begin(), dims.end(), std::ostream_iterator<int>(ss, " "));
-        return ss.str();
-    };
     for (auto& layer : layers) {
         auto& dims = layer.dims;
         if (std::find(dims.begin(), dims.end(), -1) == dims.end()) continue;
         std::stringstream info_msg;
         info_msg
-            << "Dynamic shape: [" << dims_to_string(dims) << "] has been detected for layer "
+            << "Dynamic shape: [";
+            std::copy(dims.begin(), dims.end(), std::ostream_iterator<int>(info_msg, " "));
+        info_msg << "] has been detected for layer "
             << layer.name
             << ". Data with shape [";
         std::for_each(dims.begin(), dims.end(), [](int &v) { v = v == -1 ? -v : v; });
-        info_msg 
-            << dims_to_string(dims)
-            << "] will be provided as input for this layer.";
+        std::copy(dims.begin(), dims.end(), std::ostream_iterator<int>(info_msg, " "));
+        info_msg << "] will be provided as input for this layer.";
         LOG_INFO() << info_msg.str() << std::endl;
     }
 }
