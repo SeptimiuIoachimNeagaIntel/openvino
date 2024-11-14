@@ -48,7 +48,7 @@ static std::vector<int> toDims(const ov::PartialShape& partial_shape) {
     std::vector<int> result;
 
     result.reserve(partial_shape.size());
-    auto to_int = [](auto dim) { return dim.is_dynamic() ? -1 : dim.get_length(); };
+    auto to_int = [](auto dim) { return dim.is_dynamic() ? -1 : static_cast<int>(dim.get_length()); };
     std::transform(partial_shape.begin(), partial_shape.end(), std::back_inserter(result), to_int);
     return result;
 }
