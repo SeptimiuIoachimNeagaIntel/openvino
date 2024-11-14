@@ -44,18 +44,12 @@ static ov::element::Type toElementType(int cvdepth) {
     throw std::logic_error("Failed to convert opencv depth to ov::element::Type");
 }
 
-static std::vector<int> toDims(const ov::PartialShape& partialShape) {
+static std::vector<int> toDims(const ov::PartialShape& partial_shape) {
     std::vector<int> result;
 
-    result.reserve(partialShape.size());
-    for (const auto dim : partialShape)
-    {
-        if (dim.is_dynamic()) {
-            result.push_back(-1);
-        } else {
-            result.push_back(static_cast<int>(dim.get_length()));
-        }
-    }
+    result.reserve(partial_shape.size());
+    auto to_int = [](auto dim) { return dim.is_dynamic() ? -1 : dim.get_length(); };
+    std::transform(partial_shape.begin(), partial_shape.end(), std::back_inserter(result), to_int);
     return result;
 }
 
