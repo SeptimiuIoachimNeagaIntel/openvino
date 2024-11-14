@@ -35,6 +35,7 @@ static void adjustDynamicDims(LayersInfo& layers) {
     for (auto& layer : layers) {
         auto& dims = layer.dims;
         if (std::find(dims.begin(), dims.end(), -1) == dims.end()) continue;
+
         std::stringstream info_msg;
         info_msg
             << "Dynamic shape: [";
@@ -62,7 +63,6 @@ InOutLayers LayersReader::readLayers(const InferenceParams& params) {
     ov.path = OpenVINOParams::ModelPath{ort.model_path, ""};
     auto inOutLayers = getOVReader().readLayers(ov, true /* use_results_names */);
     adjustDynamicDims(inOutLayers.in_layers);
-    adjustDynamicDims(inOutLayers.out_layers);
 
     return inOutLayers;
 }
