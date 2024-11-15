@@ -31,7 +31,7 @@ static std::string getModelFileName(const InferenceParams& params) {
     ASSERT(false);
 }
 
-static void adjustDynamicDims(LayersInfo& layers) {
+static void adjustDynamicDims(LayersInfo& layers, std::string layer_type) {
     for (auto& layer : layers) {
         auto& dims = layer.dims;
         if (std::find(dims.begin(), dims.end(), -1) == dims.end()) continue;
@@ -45,7 +45,7 @@ static void adjustDynamicDims(LayersInfo& layers) {
             << ". Data with shape [";
         std::for_each(dims.begin(), dims.end(), [](int &v) { v = v == -1 ? -v : v; });
         std::copy(dims.begin(), dims.end(), std::ostream_iterator<int>(info_msg, " "));
-        info_msg << "] will be provided as input for this layer.";
+        info_msg << "] will be provided as "<< layer_type <<" for this layer.";
         LOG_INFO() << info_msg.str() << std::endl;
     }
 }
@@ -62,7 +62,8 @@ InOutLayers LayersReader::readLayers(const InferenceParams& params) {
     OpenVINOParams ov;
     ov.path = OpenVINOParams::ModelPath{ort.model_path, ""};
     auto inOutLayers = getOVReader().readLayers(ov, true /* use_results_names */);
-    adjustDynamicDims(inOutLayers.in_layers);
+    adjustDynamicDims(inOutLayers.in_layers, "input");
+    adjustDynamicDims(inOutLayers.out_layers, "output");
 
     return inOutLayers;
 }
