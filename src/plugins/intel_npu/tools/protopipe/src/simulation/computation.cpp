@@ -21,8 +21,19 @@ const std::vector<Meta>& Computation::getOutMeta() const {
 }
 
 cv::GCompiled Computation::compile(cv::GMetaArgs&& in_meta, cv::GCompileArgs&& args) {
+    std::cout << "Septi File:Line:" __FILE__ <<":"<< __LINE__<< " Function: " << __FUNCTION__ << std::endl;
     auto compile_args = m_compile_args;
+    std::cout << "Septi File:Line:" __FILE__ <<":"<< __LINE__<< " Function: " << __FUNCTION__ << std::endl;
     compile_args += std::move(args);
+    std::cout << "------------------ Septi File:Line:" __FILE__ <<":"<< __LINE__<< " Function: " << __FUNCTION__ << std::endl;
+    try {
+    auto res = m_comp.compile(std::move(in_meta), std::move(compile_args));
+    std::cout << "Septi File:Line:" __FILE__ <<":"<< __LINE__<< " Function: " << __FUNCTION__ << std::endl;
+    return res;
+    } catch (std::exception& e) {
+        std::cout << "------------------------------- Septi File:Line:" __FILE__ <<":"<< __LINE__<< " Function: " << __FUNCTION__ << std::endl;
+        std::cout << e.what() << std::endl;
+    }
     return m_comp.compile(std::move(in_meta), std::move(compile_args));
 }
 

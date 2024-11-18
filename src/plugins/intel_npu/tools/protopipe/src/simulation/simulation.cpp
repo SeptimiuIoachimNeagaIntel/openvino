@@ -126,7 +126,9 @@ std::shared_ptr<PipelinedCompiled> Simulation::compilePipelined(const bool drop_
 }
 
 std::shared_ptr<SyncCompiled> Simulation::compileSync(const bool drop_frames) {
+    std::cout << "Septi Here4" << std::endl;
     auto compile_args = cv::compile_args(getNetworksPackage());
+    std::cout << "Septi Here5" << std::endl;
     return compileSync(createSources(drop_frames), std::move(compile_args));
 }
 

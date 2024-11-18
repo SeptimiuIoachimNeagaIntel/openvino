@@ -86,10 +86,13 @@ bool parseCommandLine(int* argc, char*** argv) {
 
 static ICompiled::Ptr compileSimulation(Simulation::Ptr simulation, const bool pipelined, const bool drop_frames) {
     LOG_INFO() << "Compile simulation" << std::endl;
+    std::cout << "Septi Here1" << std::endl;
     if (pipelined) {
         return simulation->compilePipelined(drop_frames);
     }
+    std::cout << "Septi Here2 drop_frames = " << drop_frames << std::endl;
     return simulation->compileSync(drop_frames);
+    std::cout << "Septi Here3" << std::endl;
 };
 
 class ThreadRunner {

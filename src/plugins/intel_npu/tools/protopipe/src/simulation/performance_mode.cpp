@@ -299,11 +299,13 @@ std::shared_ptr<PipelinedCompiled> PerformanceSimulation::compilePipelined(Dummy
 }
 
 std::shared_ptr<SyncCompiled> PerformanceSimulation::compileSync(const bool drop_frames) {
+    std::cout << "Septi File:Line:" __FILE__ <<":"<< __LINE__<< " Function: " << __FUNCTION__ << std::endl;
     auto compile_args = cv::compile_args(getNetworksPackage());
     if (m_opts.inference_only) {
         // TODO: Extend also for ONNXRT backend
         compile_args += cv::compile_args(cv::gapi::wip::ov::benchmark_mode{});
     }
+    std::cout << "Septi File:Line:" __FILE__ <<":"<< __LINE__<< " Function: " << __FUNCTION__ << std::endl;
 
     const uint32_t max_parallel_branches = m_comp.getMaxParallelBranches();
     if (max_parallel_branches > 1u) {
@@ -314,6 +316,7 @@ std::shared_ptr<SyncCompiled> PerformanceSimulation::compileSync(const bool drop
         ;
         compile_args += cv::compile_args(cv::use_threaded_executor{max_parallel_branches});
     }
+    std::cout << "Septi File:Line:" __FILE__ <<":"<< __LINE__<< " Function: " << __FUNCTION__ << std::endl;
 
     auto sources = createSources(drop_frames);
     SyncSimulation::Options options{0u};
@@ -330,8 +333,11 @@ std::shared_ptr<SyncCompiled> PerformanceSimulation::compileSync(const bool drop
         }
         options.after_iter_delay_in_us = static_cast<uint32_t>(source_latency_in_ms - target_latency_in_ms) * 1000u;
     }
-
+    std::cout << "Septiii File:Line:" __FILE__ <<":"<< __LINE__<< " Function: " << __FUNCTION__ << std::endl;
     auto compiled = m_comp.compile(descr_of(sources), std::move(compile_args));
-    return std::make_shared<SyncSimulation>(std::move(compiled), std::move(sources), m_comp.getOutMeta().size(),
+    std::cout << "Septii File:Line:" __FILE__ <<":"<< __LINE__<< " Function: " << __FUNCTION__ << std::endl;
+    auto res = std::make_shared<SyncSimulation>(std::move(compiled), std::move(sources), m_comp.getOutMeta().size(),
                                             options);
+    std::cout << "Septi File:Line:" __FILE__ <<":"<< __LINE__<< " Function: " << __FUNCTION__ << std::endl;
+    return res;
 }
